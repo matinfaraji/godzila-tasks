@@ -13,7 +13,7 @@ import {
   import { useState, useEffect } from "react";
   
   interface Task {
-    _id: string;
+    _id: number;
     title: string;
     date: string;
     description: string;

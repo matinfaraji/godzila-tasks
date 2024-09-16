@@ -30,9 +30,7 @@ interface Task {
   important: boolean;
   status: boolean;
 }
-interface taskc {
-    taskc: Task;
-  }
+
 
 const Cards: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
