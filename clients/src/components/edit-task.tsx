@@ -1,174 +1,178 @@
-import * as React from "react";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import TextField from "@mui/material/TextField";
-import { Button, Checkbox, FormControlLabel } from "@mui/material";
-import { useState, useEffect } from "react";
-import axios from "axios";
-
-export interface SimpleDialogProps {
-  open: boolean;
-  onClose: (value: string) => void;
-  taskId?: string; // Add taskId prop to identify the task to edit
-}
-
-function SimpleDialog(props: SimpleDialogProps) {
-  const { onClose, open, taskId } = props;
-
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [date, setDate] = useState("");
-  const [important, setImportant] = useState(false);
-  const [status, setStatus] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    if (taskId) {
-      // Fetch the task data when the dialog opens
-      const fetchTask = async () => {
-        try {
-          const response = await axios.get(`http://localhost:3000/tasks/${taskId}`);
-          const task = response.data;
-          setTitle(task.title);
-          setDescription(task.description);
-          setDate(task.date);
-          setImportant(task.important);
-          setStatus(task.status);
-        } catch (err) {
-          setError("Failed to fetch task data. Please try again.");
-        }
-      };
-
-      fetchTask();
-    }
-  }, [taskId]);
-
-  const handleSubmit = async () => {
-    if (!title || !description) {
-      setError("Title and Description are required.");
-      return;
-    }
-
-    setError("");
-    const formData = {
-      title,
-      description,
-      date,
-      important,
-      status,
+import {
+    Button,
+    Checkbox,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    FormControlLabel,
+    TextField,
+  } from "@mui/material";
+  import axios from "axios";
+  import * as React from "react";
+  import { useState, useEffect } from "react";
+  
+  interface Task {
+    _id: string;
+    title: string;
+    date: string;
+    description: string;
+    directory: string;
+    important: boolean;
+    status:boolean
+  }
+  
+  interface UserDialogProps {
+    TaskEdit: Task;
+    onClose: (action?: string) => void;
+    open: boolean;
+  }
+  
+  export function UserDialog({ TaskEdit, onClose, open }: UserDialogProps) {
+    const [task, setTask] = useState<Task>(TaskEdit);
+    const [date, setDate] = useState<string>(formatDate(TaskEdit.date));
+  
+    // Update state when TaskEdit changes
+    useEffect(() => {
+      setTask(TaskEdit);
+      setDate(formatDate(TaskEdit.date));
+    }, [TaskEdit]);
+  
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = event.target;
+      setTask((prevTask) => ({
+        ...prevTask,
+        [name]: value,
+      }));
     };
-
-    setLoading(true);
-    try {
-      if (taskId) {
-        // Update the task if taskId is provided
-        const response = await axios.put(`http://localhost:3000/tasks/${taskId}`, formData);
-        console.log("Task updated:", response.data);
-      } else {
-        // Create a new task if taskId is not provided
-        const response = await axios.post("http://localhost:3000/tasks", formData);
-        console.log("Task created:", response.data);
-      }
+  
+    const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const newDate = event.target.value;
+      setDate(newDate);
+      setTask((prevTask) => ({
+        ...prevTask,
+        date: newDate,
+      }));
+    };
+  
+    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { id, checked } = event.target;
+      setTask((prevTask) => ({
+        ...prevTask,
+        [id]: checked,
+      }));
+    };
+  
+    const handleSubmit = async () => {
+      const taskId = TaskEdit._id; // Use the string _id directly
+      const updateTask = {
+        title: task.title,
+        date: task.date,
+        description: task.description,
+        directory: task.directory,
+        important: task.important,
+        // Assuming 'status' is part of Task, include it here if needed
+        // status: task.status,
+      };
+      await axios.put(`http://localhost:3000/tasks/${taskId}`, updateTask);
       onClose("submit");
-    } catch (err) {
-      setError("Failed to save task. Please try again.");
-    } finally {
-      setLoading(false);
+    };
+  
+    // Function to format the date to yyyy-MM-dd
+    function formatDate(dateString: string): string {
+      const date = new Date(dateString);
+      return date.toISOString().split("T")[0]; // Get only the date part
     }
-  };
-
-  return (
-    <Dialog onClose={() => onClose("cancel")} open={open}>
-      <DialogTitle>{taskId ? "Edit Task" : "Enter Details"}</DialogTitle>
-      <div style={{ padding: "20px" }}>
-        <TextField
-          id="input1"
-          label="Title"
-          fullWidth
-          margin="normal"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          error={!title && !!error}
-          helperText={!title && !!error ? "Title is required." : ""}
-        />
-        <TextField
-          id="input2"
-          label="Description"
-          fullWidth
-          margin="normal"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          error={!description && !!error}
-          helperText={!description && !!error ? "Description is required." : ""}
-        />
-        <TextField
-          id="date"
-          label="Choose a date"
-          type="date"
-          fullWidth
-          margin="normal"
-          InputLabelProps={{ shrink: true }}
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              id="important"
-              checked={important}
-              onChange={(e) => setImportant(e.target.checked)}
-            />
-          }
-          label="Important"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              id="status"
-              checked={status}
-              onChange={(e) => setStatus(e.target.checked)}
-            />
-          }
-          label="Status"
-        />
-        <Button 
-          variant="contained" 
-          color="primary" 
-          onClick={handleSubmit} 
-          disabled={loading}
-        >
-          {loading ? "Submitting..." : "Submit"}
+  
+    return (
+      <Dialog onClose={() => onClose()} open={open}>
+        <DialogTitle>Edit Task</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            name="title"
+            label="Title"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={task.title}
+            onChange={handleChange}
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            name="description"
+            label="Description"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={task.description}
+            onChange={handleChange}
+          />
+          <TextField
+            id="date"
+            label="Choose a date"
+            type="date"
+            fullWidth
+            margin="normal"
+            InputLabelProps={{ shrink: true }}
+            value={date}
+            onChange={handleDateChange}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                id="important"
+                checked={task.important}
+                onChange={handleCheckboxChange}
+              />
+            }
+            label="Important"
+          />
+          {/* If status is part of the Task object, include it here */}
+          <FormControlLabel
+            control={
+              <Checkbox
+                id="status"
+                checked={task.status || false}
+                onChange={handleCheckboxChange}
+              />
+            }
+            label="Status"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => onClose()} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} color="primary">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+  
+  interface TaskDialogProps {
+    taskc: Task;
+  }
+  
+  export default function TaskDialog({ taskc }: TaskDialogProps) {
+    const [open, setOpen] = React.useState(false);
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+    const handleClose = () => {
+      setOpen(false);
+    };
+    return (
+      <div>
+        <Button variant="outlined" onClick={handleClickOpen}>
+          Edit Task
         </Button>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        <UserDialog TaskEdit={taskc} open={open} onClose={handleClose} />
       </div>
-    </Dialog>
-  );
-}
-
-export default function SimpleDialogDemo() {
-  const [open, setOpen] = React.useState(false);
-  const [taskId, setTaskId] = React.useState<string | undefined>(undefined);
-
-  const handleClickOpen = (id?: string) => {
-    setTaskId(id);
-    setOpen(true);
-  };
-
-  const handleClose = (value: string) => {
-    setOpen(false);
-    console.log("Submitted:", value);
-  };
-
-  return (
-    <div>
-      <Button variant="outlined" onClick={() => handleClickOpen()}>
-        Create Task
-      </Button>
-      <Button variant="outlined" onClick={() => handleClickOpen("task-id")}>
-        Edit Task
-      </Button>
-      <SimpleDialog open={open} onClose={handleClose} taskId={taskId} />
-    </div>
-  );
-}
+    );
+  }
+  
