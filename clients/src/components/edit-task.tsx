@@ -6,12 +6,13 @@ import {
     DialogContent,
     DialogTitle,
     FormControlLabel,
+    IconButton,
     TextField,
   } from "@mui/material";
   import axios from "axios";
   import * as React from "react";
   import { useState, useEffect } from "react";
-  
+  import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
   interface Task {
     _id: number;
     title: string;
@@ -32,7 +33,6 @@ import {
     const [task, setTask] = useState<Task>(TaskEdit);
     const [date, setDate] = useState<string>(formatDate(TaskEdit.date));
   
-    // Update state when TaskEdit changes
     useEffect(() => {
       setTask(TaskEdit);
       setDate(formatDate(TaskEdit.date));
@@ -64,24 +64,20 @@ import {
     };
   
     const handleSubmit = async () => {
-      const taskId = TaskEdit._id; // Use the string _id directly
+      const taskId = TaskEdit._id;
       const updateTask = {
         title: task.title,
         date: task.date,
         description: task.description,
         directory: task.directory,
         important: task.important,
-        // Assuming 'status' is part of Task, include it here if needed
-        // status: task.status,
       };
       await axios.put(`http://localhost:3000/tasks/${taskId}`, updateTask);
       onClose("submit");
     };
-  
-    // Function to format the date to yyyy-MM-dd
     function formatDate(dateString: string): string {
       const date = new Date(dateString);
-      return date.toISOString().split("T")[0]; // Get only the date part
+      return date.toISOString().split("T")[0]; 
     }
   
     return (
@@ -130,7 +126,6 @@ import {
             }
             label="Important"
           />
-          {/* If status is part of the Task object, include it here */}
           <FormControlLabel
             control={
               <Checkbox
@@ -168,9 +163,9 @@ import {
     };
     return (
       <div>
-        <Button variant="outlined" onClick={handleClickOpen}>
-          Edit Task
-        </Button>
+         <IconButton  onClick={handleClickOpen}>
+          <EditTwoToneIcon/>
+        </IconButton>
         <UserDialog TaskEdit={taskc} open={open} onClose={handleClose} />
       </div>
     );

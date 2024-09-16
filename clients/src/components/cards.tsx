@@ -71,6 +71,19 @@ const Cards: React.FC = () => {
       console.error("Failed to update task importance", error);
     }
   };
+  const toggleStatus = async (id: number) => {
+    const task = tasks.find((task) => task._id === id);
+    if (!task) return;
+
+    const updatedTask = { ...task, status: !task.status };
+
+    try {
+      await axios.put(`http://localhost:3000/tasks/${id}`, updatedTask);
+      fetchTasks();
+    } catch (error) {
+      console.error("Failed to update task importance", error);
+    }
+  };
 
   const filteredTasks = tasks.filter((task) =>
     task.title.toLowerCase().includes(filter.toLowerCase())
@@ -78,6 +91,7 @@ const Cards: React.FC = () => {
 
   return (
     <Box>
+      
       <Typography variant="h6">All tasks ({tasks.length} tasks)</Typography>
       <Box display="flex" justifyContent="space-between" gap={2} mt={2}>
         <Box>
@@ -132,15 +146,15 @@ const Cards: React.FC = () => {
                   <DeleteOutlineOutlinedIcon />
                 </IconButton>
                 <IconButton
-                  onClick={() => toggleImportant(task._id)}
+                  onClick={() => toggleStatus(task._id)}
                   aria-label="Mark as Important"
                 >
                   <StarOutlineOutlinedIcon
-                    sx={{ color: task.important ? "red" : "darkgray" }}
+                    sx={{ color: task.status ? "red" : "darkgray" }}
                   />
                 </IconButton>
-              </CardActions>
               <TaskDialog key={task._id} taskc={task} />
+              </CardActions>
             </Card>
           </Grid>
         ))}

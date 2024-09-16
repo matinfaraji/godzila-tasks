@@ -10,43 +10,42 @@ export default function Navbar() {
     const updateDate = () => {
       const now = new Date();
       const formattedDate = now.toLocaleDateString();
-      setCurrentDate(`${formattedDate}`);
+      setCurrentDate(`${formattedDate}`); // اصلاح شده
     };
 
     updateDate();
-    const intervalId = setInterval(updateDate, 1000); 
+    const intervalId = setInterval(updateDate, 1000);
 
     return () => clearInterval(intervalId);
   }, []);
+
   return (
-    
-      <div className="flex justify-around gap-8  text-1xl my-9">
-        <form>
-          <TextField
-            id="search-bar"
-            label="Search"
-            variant="outlined"
-            size="small"
-          />
-          <IconButton type="submit" aria-label="search ">
-            <SearchIcon />
-          </IconButton>
-        </form>
-        <p>{currentDate}</p>
-        <div>
-          <IconButton aria-label="notifications" sx={{ color: "#7700FF" }}>
-            <NotificationsIcon />
-          </IconButton>
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "#7700FF",
-              "&:hover": { backgroundColor: "#5500CC" },
-            }}
-          >
-            Purple Button
-          </Button>
-        </div>
+    <div className="flex items-center space-x-4">
+      <form className="flex items-center">
+        <TextField
+          id="search-bar"
+          label="Search"
+          variant="outlined"
+          size="small"
+        />
+        <IconButton type="submit" aria-label="search">
+          <SearchIcon />
+        </IconButton>
+      </form>
+      <p>{currentDate}</p>
+      <div className="flex items-center space-x-2">
+        <IconButton aria-label="notifications" sx={{ color: "#7700FF" }}>
+          <NotificationsIcon />
+        </IconButton>
+        <Button
+          variant="contained"
+          sx={{
+            backgroundColor: "#7700FF",
+            "&:hover": { backgroundColor: "#5500CC" },
+          }}
+        >
+          Purple Button
+        </Button>
       </div>
-  );
-}
+    </div>
+  )}
