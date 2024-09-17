@@ -1,9 +1,9 @@
-import { Button, IconButton, TextField, Box, Typography } from "@mui/material";
+import { Button, IconButton,  Box, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 
 import SimpleDialogDemo from "./createTask";
-
+import Weaders from "./weader";
 export default function Navbar() {
   const [currentDate, setCurrentDate] = useState<string>("");
 
@@ -31,12 +31,7 @@ export default function Navbar() {
       mb={10}
     >
       <form style={{ display: "flex", alignItems: "center" }}>
-        <TextField
-          id="search-bar"
-          label="Search"
-          variant="outlined"
-          size="small"
-        />
+      <Weaders/>
         <IconButton type="submit" aria-label="search">
           <SearchIcon />
         </IconButton>
