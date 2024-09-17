@@ -18,7 +18,6 @@ import {
   DeleteOutlineOutlined as DeleteOutlineOutlinedIcon,
   StarOutlineOutlined as StarOutlineOutlinedIcon,
 } from "@mui/icons-material";
-import SimpleDialogDemo from "./createTask";
 import TaskDialog from "./edit-task";
 
 interface Task {
@@ -158,9 +157,8 @@ const Cards: React.FC = () => {
             </Card>
           </Grid>
         ))}
-        <Box my="auto">
-          {" "}
-          <SimpleDialogDemo />{" "}
+        <Box mx="auto" my="auto">
+          
         </Box>
       </Grid>
     </Box>

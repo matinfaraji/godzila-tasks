@@ -1,7 +1,8 @@
-import { Button, IconButton, TextField } from "@mui/material";
+import { Button, IconButton, TextField, Box, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import SimpleDialogDemo from "./createTask";
 
 export default function Navbar() {
   const [currentDate, setCurrentDate] = useState<string>("");
@@ -10,7 +11,7 @@ export default function Navbar() {
     const updateDate = () => {
       const now = new Date();
       const formattedDate = now.toLocaleDateString();
-      setCurrentDate(`${formattedDate}`); // اصلاح شده
+      setCurrentDate(formattedDate);
     };
 
     updateDate();
@@ -20,8 +21,16 @@ export default function Navbar() {
   }, []);
 
   return (
-    <div className="flex items-center space-x-4">
-      <form className="flex items-center">
+    <Box
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+      gap={2}
+      my={2}
+      mx={5}
+      mb={10}
+    >
+      <form style={{ display: "flex", alignItems: "center" }}>
         <TextField
           id="search-bar"
           label="Search"
@@ -32,20 +41,19 @@ export default function Navbar() {
           <SearchIcon />
         </IconButton>
       </form>
-      <p>{currentDate}</p>
-      <div className="flex items-center space-x-2">
-        <IconButton aria-label="notifications" sx={{ color: "#7700FF" }}>
-          <NotificationsIcon />
-        </IconButton>
+      <Typography variant="body1">{currentDate}</Typography>
+      <Box display="flex" alignItems="center" gap={1}>
         <Button
           variant="contained"
           sx={{
-            backgroundColor: "#7700FF",
+            backgroundColor: "darkblue",
             "&:hover": { backgroundColor: "#5500CC" },
           }}
         >
-          Purple Button
+          new task
+          <SimpleDialogDemo />
         </Button>
-      </div>
-    </div>
-  )}
+      </Box>
+    </Box>
+  );
+}

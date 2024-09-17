@@ -42,6 +42,7 @@ function SimpleDialog(props: SimpleDialogProps) {
       const response = await axios.post("http://localhost:3000/tasks", formData);
       console.log("Task created:", response.data);
       onClose("submit");
+      window.location.reload()
     } catch (err) {
       setError("Failed to create task. Please try again.");
     } finally {
@@ -131,10 +132,9 @@ export default function SimpleDialogDemo() {
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Create Task
+      <Button onClick={handleClickOpen}>
       </Button>
-      <SimpleDialog open={open} onClose={handleClose} />
+      <SimpleDialog open={open}  onClose={handleClose} />
     </div>
   );
 }
