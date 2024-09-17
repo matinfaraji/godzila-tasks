@@ -1,7 +1,7 @@
 import { Button, IconButton, TextField, Box, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 import SearchIcon from "@mui/icons-material/Search";
-import NotificationsIcon from "@mui/icons-material/Notifications";
+
 import SimpleDialogDemo from "./createTask";
 
 export default function Navbar() {
