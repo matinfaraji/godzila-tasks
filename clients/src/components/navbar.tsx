@@ -1,6 +1,6 @@
-import { Button, IconButton,  Box, Typography } from "@mui/material";
+import { Button,   Box, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
-import SearchIcon from "@mui/icons-material/Search";
+
 
 import SimpleDialogDemo from "./createTask";
 import Weaders from "./weader";
@@ -32,9 +32,6 @@ export default function Navbar() {
     >
       <form style={{ display: "flex", alignItems: "center" }}>
       <Weaders/>
-        <IconButton type="submit" aria-label="search">
-          <SearchIcon />
-        </IconButton>
       </form>
       <Typography variant="body1">{currentDate}</Typography>
       <Box display="flex" alignItems="center" gap={1}>
@@ -42,7 +39,7 @@ export default function Navbar() {
           variant="contained"
           sx={{
             backgroundColor: "darkblue",
-            "&:hover": { backgroundColor: "#5500CC" },
+            "&:hover": { backgroundColor: "#5500CC" },textAlign:"center"
           }}
         >
           new task

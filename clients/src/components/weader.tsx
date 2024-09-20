@@ -1,3 +1,4 @@
+import { Box, Typography } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 
 interface WeatherData {
@@ -10,8 +11,7 @@ const Weaders: React.FC = () => {
   const [temperature, setTemperature] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 const apikey = import.meta.env.VITE_API_KEY;
-// const apikey ="cb06270426571f273e11672077b55b39"
-// console.log(apikey);
+
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -19,7 +19,7 @@ const apikey = import.meta.env.VITE_API_KEY;
           const { latitude, longitude } = position.coords;
           fetchWeatherData(latitude, longitude);
         },
-        (error) => {
+        () => {
           setError('Unable to retrieve your location');
         }
       );
@@ -35,22 +35,36 @@ const apikey = import.meta.env.VITE_API_KEY;
       );
       const data: WeatherData = await response.json();
       setTemperature(data.main.temp);
-    } catch (error) {
+    } catch () {
       setError('Unable to fetch weather data');
     }
   };
 
   return (
-    <div>
-      <h1>Current Temperature</h1>
-      {error ? (
-        <p>{error}</p>
-      ) : temperature !== null ? (
-        <p>{temperature}°C</p>
-      ) : (
-        <p>Loading...</p>
-      )}
-    </div>
+    <Box
+    sx={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: 160,
+      height: 40,
+      border: '1px solid #ccc',
+      borderRadius: 2,
+      backgroundColor: 'darkblue',
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+      fontSize: 16,
+      fontWeight: 'bold',
+      textAlign: 'center',
+    }}
+  >
+    {error ? (
+      <Typography sx={{ color: 'red' }}>{error}</Typography>
+    ) : temperature !== null ? (
+      <Typography sx={{ color: 'white' }}>{temperature}°C</Typography>
+    ) : (
+      <Typography sx={{ color: '#888' }}>Loading...</Typography>
+    )}
+  </Box>
   );
 };
 

@@ -17,7 +17,7 @@ app.use(
 );
 
 const PORT: number | string = process.env.APP_PORT || 5000;
-const DB_URL: string = process.env.URL || "your_default_db_url";
+const DB_URL: string = process.env.URL || "";
 
 app.use("/", userRoutes);
 
